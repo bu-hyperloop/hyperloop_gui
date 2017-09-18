@@ -3,16 +3,18 @@ import os
 import threading
 from PyQt4 import QtGui, QtCore
 import main_window
-import time
+from datetime import datetime
 
 class MainApp(QtGui.QMainWindow, main_window.Ui_MainWindow):
 
-    """ --- Initialization Step --- """
+    """ --- START Initialization Step --- """
     # Initialize label values
     valTime = 0.00
     valTapeCount = 0
     valPosition = 0
     valAccX = 0.00
+
+    tempTime = datetime.now()
 
     # Declare threading targets
     runMainLoop = False
@@ -25,30 +27,32 @@ class MainApp(QtGui.QMainWindow, main_window.Ui_MainWindow):
 
         self.startButton.clicked.connect(self.startMainLoop) # connect startButton to mainLoop member method
         self.stopButton.clicked.connect(self.stopMainLoop)
-
     """ --- END initialization step ---"""
 
-    """ Helper Methods """
+    """ --- Helper Methods --- """
     def updateLabels(self): #Helper function to update values of labels
         self.labelValTime.setText(QtCore.QString( str(round(self.valTime, 2)) ))
-        self.labelValTapeCount.setText(QtCore.QString( str(self.valTapeCount) ))
-        self.labelValPosition.setText(QtCore.QString( str(self.valPosition) ))
+        self.labelValTapeCount.setText(QtCore.QString( str(int(self.valTapeCount)) ))
+        self.labelValPosition.setText(QtCore.QString( str(int(self.valPosition)) ))
         self.labelValAccX.setText(QtCore.QString( str(round(self.valAccX, 2)) ))
 
+    """ --- Main Loop --- """
     def startMainLoop(self): #Helper function to create a new thread for mainLoop
+        self.tempTime = datetime.now()
         self.runMainLoop = True
+
         threading.Thread(target=self.mainLoop).start()
 
     def stopMainLoop(self): # Helper function to end thread for mainLoop
-        setattr(self, "runMainLoop", False)
+        self.runMainLoop = False
 
     def mainLoop(self): # A dummy mainLoop for now, but increments all member values
-        while getattr(self, "runMainLoop", True):
-            self.valTime+=1
-            self.valTapeCount+=1
-            self.valPosition+=1
-            self.valAccX+=1
-            time.sleep(1)  
+        while self.runMainLoop:
+            delta = (datetime.now() - self.tempTime).total_seconds()
+            self.valTime = delta
+            self.valTapeCount = delta//1
+            self.valPosition = delta//1
+            self.valAccX = delta//1
             self.updateLabels()
     
 def main():
