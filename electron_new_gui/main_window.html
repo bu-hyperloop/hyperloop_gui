@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Pod Control Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+    <nav><!--Navigation Bar--></nav>
+
+    <div class="container">
+        <div class="row">
+            <div class = "col s5">
+                <table class="striped">
+                    <thead>
+                        <tr>
+                            <th>Variable</th> <th>V1</th> <th>V2</th> <th>V3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Yaw</th> <td></td> <td></td> <td></td>
+                        </tr>
+                        <tr>
+                            <th>Pitch</th> <td></td> <td></td> <td></td>
+                        </tr>
+                        <tr>
+                            <th>Roll</th> <td></td> <td></td> <td></td>
+                        </tr>
+                        <tr>
+                            <th>Acceleration</th> <td></td> <td></td> <td></td>
+                        </tr>
+                        <tr>
+                            <th>Velocity</th> <td></td> <td></td> <td></td>
+                        </tr>
+                        <tr>
+                            <th>Position</th> <td></td> <td></td> <td></td>
+                        </tr>
+                        <tr>
+                            <th>Temp. Battery</th> <td></td> <td></td> <td></td>
+                        </tr>
+                        <tr>
+                            <th>Temp. Engine</th> <td></td> <td></td> <td></td>
+                        </tr>
+                        <tr>
+                            <th>Temp. Ambient</th> <td></td> <td></td> <td></td>        
+                        </tr>
+                        <tr>
+                            <th>Voltage 1</th> <td></td> <td></td> <td></td> 
+                        </tr>
+                        <tr>
+                            <th>Voltage 2</th> <td></td> <td></td> <td></td>
+                        </tr>
+                        <tr>
+                            <th>Current 1</th> <td></td> <td></td> <td></td> 
+                        </tr>
+                        <tr>
+                            <th>Current 2</th> <td></td> <td></td> <td></td>        
+                        </tr>
+                        <tr>
+                            <th>Tacos</th> <td></td> <td></td> <td></td> 
+                        </tr>
+                        <tr>
+                            <th>Banaynays</th> <td></td> <td></td> <td></td> 
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class = "col s7">
+                <svg width="350" height="160">
+                    <!-- 60px x 10px margin -->
+                    <g class="layer" transform="translate(60,10)">
+                    <!-- cx = 270px * ($X / 3)
+                                ^      ^   ^
+                    width of graph  x-value max(x)
+                
+                            cy = 120px - (($Y / 80) * 120px)
+                                ^       ^     ^       ^
+                        top of graph   y-value  max(y)  scale -->
+                    <circle r="5" cx="0"   cy="105" />
+                    <circle r="5" cx="90"  cy="90"  />
+                    <circle r="5" cx="180" cy="60"  />
+                    <circle r="5" cx="270" cy="0"   />
+                
+                    <g class="y axis">
+                        <line x1="0" y1="0" x2="0" y2="120" />
+                        <text x="-40" y="105" dy="5">$10</text>
+                        <text x="-40" y="0"   dy="5">$80</text>
+                    </g>
+                    <g class="x axis" transform="translate(0, 120)">
+                        <line x1="0" y1="0" x2="270" y2="0" />
+                        <text x="-30"   y="20">January 2014</text>
+                        <text x="240" y="20">April</text>
+                    </g>
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://d3js.org/d3.v4.min.js"> 
+        const d3 = require("d3");
+        console.log(d3);
+        /*
+        var numbers = [5, 4, 10, 1],
+            data = [
+                { date: '2014-01-01', amount: 10 },
+                { date: '2014-02-01', amount: 20 },
+                { date: '2014-03-01', amount: 40 },
+                { date: '2014-04-01', amount: 80 }
+            ];
+        console.log(d3.min(numbers));
+        */
+    </script>
+    
+
+</body>
+</html>
