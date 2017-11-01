@@ -20,6 +20,8 @@ app.on("ready", function(){
         slashes: true
     }));
 
+    main_window.toggleDevTools();
+
     //Handler when "main_window" is closed
     main_window.on("closed", function(){
         app.quit();

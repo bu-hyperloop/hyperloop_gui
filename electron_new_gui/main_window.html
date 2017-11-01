@@ -1,118 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Pod Control Panel</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <!--
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
-    <link rel="stylesheet" href="theme.css">
+    -->
+    <link rel="stylesheet" href="node_modules/rickshaw/rickshaw.min.css">
+    
+    <title>Pod Control Panel</title>
 </head>
 <body>
-    <nav><!--Navigation Bar--></nav>
+    <!--Dependencies-->
+    <script src="node_modules/rickshaw/vendor/d3.min.js"></script>
+    <script src="node_modules/rickshaw/vendor/d3.layout.min.js"></script>
+    <script src="node_modules/rickshaw/rickshaw.min.js"></script>
 
-    <div class="container">
-        <div class="row">
-            <div class = "col s5">
-                <table class="striped">
-                    <thead>
-                        <tr>
-                            <th>Variable</th> <th>V1</th> <th>V2</th> <th>V3</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th>Yaw</th> <td></td> <td></td> <td></td>
-                        </tr>
-                        <tr>
-                            <th>Pitch</th> <td></td> <td></td> <td></td>
-                        </tr>
-                        <tr>
-                            <th>Roll</th> <td></td> <td></td> <td></td>
-                        </tr>
-                        <tr>
-                            <th>Acceleration</th> <td></td> <td></td> <td></td>
-                        </tr>
-                        <tr>
-                            <th>Velocity</th> <td></td> <td></td> <td></td>
-                        </tr>
-                        <tr>
-                            <th>Position</th> <td></td> <td></td> <td></td>
-                        </tr>
-                        <tr>
-                            <th>Temp. Battery</th> <td></td> <td></td> <td></td>
-                        </tr>
-                        <tr>
-                            <th>Temp. Engine</th> <td></td> <td></td> <td></td>
-                        </tr>
-                        <tr>
-                            <th>Temp. Ambient</th> <td></td> <td></td> <td></td>        
-                        </tr>
-                        <tr>
-                            <th>Voltage 1</th> <td></td> <td></td> <td></td> 
-                        </tr>
-                        <tr>
-                            <th>Voltage 2</th> <td></td> <td></td> <td></td>
-                        </tr>
-                        <tr>
-                            <th>Current 1</th> <td></td> <td></td> <td></td> 
-                        </tr>
-                        <tr>
-                            <th>Current 2</th> <td></td> <td></td> <td></td>        
-                        </tr>
-                        <tr>
-                            <th>Tacos</th> <td></td> <td></td> <td></td> 
-                        </tr>
-                        <tr>
-                            <th>Banaynays</th> <td></td> <td></td> <td></td> 
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class = "col s7">
-                <svg width="350" height="160">
-                    <!-- 60px x 10px margin -->
-                    <g class="layer" transform="translate(60,10)">
-                    <!-- cx = 270px * ($X / 3)
-                                ^      ^   ^
-                    width of graph  x-value max(x)
-                
-                            cy = 120px - (($Y / 80) * 120px)
-                                ^       ^     ^       ^
-                        top of graph   y-value  max(y)  scale -->
-                    <circle r="5" cx="0"   cy="105" />
-                    <circle r="5" cx="90"  cy="90"  />
-                    <circle r="5" cx="180" cy="60"  />
-                    <circle r="5" cx="270" cy="0"   />
-                
-                    <g class="y axis">
-                        <line x1="0" y1="0" x2="0" y2="120" />
-                        <text x="-40" y="105" dy="5">$10</text>
-                        <text x="-40" y="0"   dy="5">$80</text>
-                    </g>
-                    <g class="x axis" transform="translate(0, 120)">
-                        <line x1="0" y1="0" x2="270" y2="0" />
-                        <text x="-30"   y="20">January 2014</text>
-                        <text x="240" y="20">April</text>
-                    </g>
-                    </g>
-                </svg>
-            </div>
-        </div>
-    </div>
+    <!--Graph Cards-->
+    <div id="row1" class="row"></div>
+    <div id="row2" class="row"></div>
+    <div id="row3" class="row"></div>
 
-    <script src="https://d3js.org/d3.v4.min.js"> 
-        const d3 = require("d3");
-        console.log(d3);
-        /*
-        var numbers = [5, 4, 10, 1],
-            data = [
-                { date: '2014-01-01', amount: 10 },
-                { date: '2014-02-01', amount: 20 },
-                { date: '2014-03-01', amount: 40 },
-                { date: '2014-04-01', amount: 80 }
-            ];
-        console.log(d3.min(numbers));
-        */
+    <script>
+        //GLOBALS
+        var UPDATE_INTERVAL = 50; //in milliseconds
+        var GRAPH_WIDTH = "300";
+        var GRAPH_HEIGHT = "150";
+        var GRAPH_STYLE = "line";
+
+        var _graph_list = new Array();
+
+        class LineGraph{
+            //name -> "graph_name+${name}" //fg_color -> Line Color //bg_color -> Card Color //row -> Row Element Id
+            constructor(name, fg_color, bg_color, row){
+                this.name = name;
+                this.fg_color = fg_color;
+                this.bg_color = bg_color;
+
+                this.graph_id = name+"_graph";
+                this.curr_val_id = name+"_val";
+
+                //Creates HTML div object 
+                this.col = document.createElement("div");
+                this.col.className = "col";
+                    //Inner Card element
+                    let card = document.createElement("div");
+                    card.className = "card text-white mb-3 " + this.bg_color;
+                        //Card Header element
+                        let card_header = document.createElement("div");
+                        card_header.className = "card-header";
+                            let card_header_text = document.createTextNode(this.name);
+                            card_header.appendChild(card_header_text);
+                        card.appendChild(card_header);
+                        //Card Body element (graph)
+                        let card_body = document.createElement("div");
+                        card_body.className = "card-body";
+                        card_body.id = this.graph_id;
+                            //"Curr Val" element
+                            let card_val = document.createElement("div");
+                            card_val.id = this.curr_val_id;
+                                let card_val_text = document.createTextNode("placeholder");
+                                card_val.appendChild(card_val_text);
+                            console.log("Appending card_val to card_body")
+                            card_body.appendChild(card_val);
+                        card.appendChild(card_body);
+                this.col.appendChild(card);
+                document.getElementById(row).appendChild(this.col);
+
+                //Creates Rickshaw Graph object
+                this.graph = new Rickshaw.Graph({
+                    element: document.getElementById(this.graph_id),
+                    width: GRAPH_WIDTH,
+                    height: GRAPH_HEIGHT,
+                    renderer: GRAPH_STYLE,
+                    series: new Rickshaw.Series.FixedDuration([{
+                        name: 'one', color: this.fg_color
+                    }], undefined, {
+                        timeInterval: UPDATE_INTERVAL,
+                        maxDataPoints: 100,
+                        timeBase: new Date().getTime() / 1000
+                    })
+                });
+
+            }
+
+            get divEle(){ return this.col; }
+            get graphObj(){ return this.graph; }
+            get graphId(){ return this.graph_id; }
+            get currValId(){ return this.curr_val_id;}
+        }
+
+        //TEST INIT
+        //Add to row1
+        //Create div object  
+        var test_graph = new LineGraph("test", "white", "bg-success", "row1");
+
+        //Initialization
+        for(var i = 0; i < 100; i++){
+            addRandomData(test_graph);
+        }
+        test_graph.graphObj.render();
+
+        //Update Loop
+        setInterval(function () {
+            addRandomData(test_graph);
+            test_graph.graphObj.render();
+        }, UPDATE_INTERVAL);
+
+        /*-----Helper Methods-----*/
+        function addRandomData(graph) {
+            var r_val = Math.floor(Math.random() * 40) + 120;
+            var data = {
+                one: r_val
+            };
+            document.getElementById(graph.currValId).innerHTML = r_val;
+            graph.graphObj.series.addData(data);
+        }
     </script>
-    
-
 </body>
 </html>
