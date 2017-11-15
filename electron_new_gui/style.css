@@ -1,0 +1,21 @@
+.container {
+    width: 95%;
+}
+
+/* Does not work to center rows :( */
+.row {
+    display: block;
+    margin: auto;
+}
+
+/* Card Styling*/
+.card.small {
+    height: 180px;
+}
+.card-content {
+    border: 1px black solid;
+}
+.card > .card-action {
+    padding: 0px;
+}
+

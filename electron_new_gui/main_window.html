@@ -1,29 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    <!--
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
-    -->
     <link rel="stylesheet" href="node_modules/rickshaw/rickshaw.min.css">
+    <link rel="stylesheet" href="style.css">
     
     <title>Pod Control Panel</title>
 </head>
 <body>
+<!--HTML Begin-->
+
+    <nav class="blue darken-1">
+        <div class="nav-wrapper">
+            <div class="brand-logo center">Pod Control Panel</div>
+        </div>
+    </nav>
+
+    <!--Graph Cards-->
+    <div class="container">
+        <div id="row1" class="row"></div>
+        <div id="row2" class="row"></div>
+        <div id="row3" class="row"></div>
+    </div>
+    <div></div>
+<!--HTML End-->
+
     <!--Dependencies-->
     <script src="node_modules/rickshaw/vendor/d3.min.js"></script>
     <script src="node_modules/rickshaw/vendor/d3.layout.min.js"></script>
     <script src="node_modules/rickshaw/rickshaw.min.js"></script>
 
-    <!--Graph Cards-->
-    <div id="row1" class="row"></div>
-    <div id="row2" class="row"></div>
-    <div id="row3" class="row"></div>
-
     <script>
         //GLOBALS
         var UPDATE_INTERVAL = 50; //in milliseconds
-        var GRAPH_WIDTH = "300";
+        var GRAPH_WIDTH = "280";
         var GRAPH_HEIGHT = "150";
         var GRAPH_STYLE = "line";
 
@@ -44,25 +55,32 @@
                 this.col.className = "col";
                     //Inner Card element
                     let card = document.createElement("div");
-                    card.className = "card text-white mb-3 " + this.bg_color;
-                        //Card Header element
-                        let card_header = document.createElement("div");
-                        card_header.className = "card-header";
-                            let card_header_text = document.createTextNode(this.name);
-                            card_header.appendChild(card_header_text);
-                        card.appendChild(card_header);
+                    card.className = "card small z-depth-4 text-white " + this.bg_color;
                         //Card Body element (graph)
                         let card_body = document.createElement("div");
-                        card_body.className = "card-body";
+                        card_body.className = "card-content";
                         card_body.id = this.graph_id;
-                            //"Curr Val" element
-                            let card_val = document.createElement("div");
-                            card_val.id = this.curr_val_id;
-                                let card_val_text = document.createTextNode("placeholder");
-                                card_val.appendChild(card_val_text);
-                            console.log("Appending card_val to card_body")
-                            card_body.appendChild(card_val);
                         card.appendChild(card_body);
+                        //Card Action element
+                        let card_action = document.createElement("div");
+                        card_action.className = "card-action blue darken-1";
+                            //Action Content Div
+                            let card_action_contents = document.createElement("div")
+                                //Title
+                                let card_action_title = document.createElement("div");
+                                card_action_title.className="col s8";
+                                card_action_title.appendChild(document.createTextNode(this.name));
+                                card_action.appendChild(card_action_title);
+                                //Curr Val
+                                let card_action_val = document.createElement("div");
+                                card_action_val.className="col s4";
+                                card_action_val.id = this.curr_val_id;
+                                card_action_val.appendChild(document.createTextNode("placeholder"));
+                                card_action.appendChild(card_action_val);
+                            card_action_contents.appendChild(card_action_title);
+                            card_action_contents.appendChild(card_action_val);
+                        card_action.appendChild(card_action_contents);
+                    card.appendChild(card_action);
                 this.col.appendChild(card);
                 document.getElementById(row).appendChild(this.col);
 
@@ -80,35 +98,46 @@
                         timeBase: new Date().getTime() / 1000
                     })
                 });
-
             }
 
             get divEle(){ return this.col; }
             get graphObj(){ return this.graph; }
             get graphId(){ return this.graph_id; }
-            get currValId(){ return this.curr_val_id;}
+            get currValId(){ return this.curr_val_id; }
         }
 
-        //TEST INIT
-        //Add to row1
-        //Create div object  
-        var test_graph = new LineGraph("test", "white", "bg-success", "row1");
-
+        //Row1
+        _graph_list.push(new LineGraph("test11", "black", "white", "row1"));
+        _graph_list.push(new LineGraph("test12", "black", "white", "row1"));
+        _graph_list.push(new LineGraph("test13", "black", "white", "row1"));
+        //Row2
+        _graph_list.push(new LineGraph("test21", "black", "white", "row2"));
+        _graph_list.push(new LineGraph("test22", "black", "white", "row2"));
+        _graph_list.push(new LineGraph("test23", "black", "white", "row2"));
+         //Row3
+        _graph_list.push(new LineGraph("test31", "black", "white", "row3"));
+        _graph_list.push(new LineGraph("test32", "black", "white", "row3"));
+        _graph_list.push(new LineGraph("test33", "black", "white", "row3"));
+ 
         //Initialization
-        for(var i = 0; i < 100; i++){
-            addRandomData(test_graph);
-        }
-        test_graph.graphObj.render();
+        _graph_list.forEach(function(graph){
+            for(let i = 0; i < 100; i++){
+                addRandomData(graph);
+            }
+            graph.graphObj.render();
+        });
 
         //Update Loop
         setInterval(function () {
-            addRandomData(test_graph);
-            test_graph.graphObj.render();
+            _graph_list.forEach(function(graph){
+                addRandomData(graph);
+                graph.graphObj.render();
+            });
         }, UPDATE_INTERVAL);
 
         /*-----Helper Methods-----*/
         function addRandomData(graph) {
-            var r_val = Math.floor(Math.random() * 40) + 120;
+            var r_val = Math.floor(Math.random() * 40) + 60;
             var data = {
                 one: r_val
             };

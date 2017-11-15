@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "electron": "^1.7.9",
+    "electron-packager": "^9.1.0",
     "rickshaw": "^1.6.3"
   }
 }
