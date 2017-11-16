@@ -1,0 +1,14 @@
+canbus
+
+Sensors:
+Temperature
+Voltage
+Current
+Acceleration
+Velocity
+Distance
+
+Controllers:
+brakes 
+motor 
+levitation system

@@ -27,6 +27,8 @@ class MainApp(QtGui.QMainWindow, main_window.Ui_MainWindow):
 
         self.startButton.clicked.connect(self.startMainLoop) # connect startButton to mainLoop member method
         self.stopButton.clicked.connect(self.stopMainLoop)
+
+        self.stopButton.setEnabled(False)
     """ --- END initialization step ---"""
 
     """ --- Helper Methods --- """
@@ -38,15 +40,20 @@ class MainApp(QtGui.QMainWindow, main_window.Ui_MainWindow):
 
     """ --- Main Loop --- """
     def startMainLoop(self): #Helper function to create a new thread for mainLoop
+        self.startButton.setEnabled(False)
+        self.stopButton.setEnabled(True)
         self.tempTime = datetime.now()
         self.runMainLoop = True
 
-        threading.Thread(target=self.mainLoop).start()
+        threading.Thread(target=self._mainLoop).start()
 
     def stopMainLoop(self): # Helper function to end thread for mainLoop
+        self.stopButton.setEnabled(False)
+        self.startButton.setEnabled(True)
         self.runMainLoop = False
 
-    def mainLoop(self): # A dummy mainLoop for now, but increments all member values
+    """ ---Threading methods --- """ 
+    def _mainLoop(self): # A dummy mainLoop for now, but increments all member values
         while self.runMainLoop:
             delta = (datetime.now() - self.tempTime).total_seconds()
             self.valTime = delta
