@@ -1,16 +1,22 @@
 {
   "name": "hyperloop_electron",
-  "version": "1.0.0",
+  "productName": "Hyperloop Pod Control Panel",
+  "version": "0.0.1",
   "description": "A gui interface for BU's hyperloop pod.",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build_darwin": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/darwin/icon.icns --prune=true --out=release-builds",
+    "build_windows": "electron-packager . Hyperloop-Pod-Control-Panel --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/windows/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName='Hyperloop Pod Control Panel'",
+    "build_linux": "electron-packager . Hyperloop-Pod-Control-Panel --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/linux/iocn.png --prune=true --out=release-builds"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "electron": "^1.7.9",
-    "electron-packager": "^9.1.0",
     "rickshaw": "^1.6.3"
+  },
+  "devDependencies": {
+    "electron-packager": "^9.1.0"
   }
 }
