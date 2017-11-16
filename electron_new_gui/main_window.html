@@ -10,7 +10,6 @@
 </head>
 <body>
 <!--HTML Begin-->
-
     <nav class="blue darken-1">
         <div class="nav-wrapper">
             <div class="brand-logo center">Pod Control Panel</div>
@@ -33,55 +32,39 @@
 
     <script>
         //GLOBALS
-        var UPDATE_INTERVAL = 50; //in milliseconds
-        var GRAPH_WIDTH = "280";
-        var GRAPH_HEIGHT = "150";
-        var GRAPH_STYLE = "line";
-
+        const UPDATE_INTERVAL = 50; //in milliseconds
+        const GRAPH_WIDTH = "280";
+        const GRAPH_HEIGHT = "150";
+        const GRAPH_STYLE = "line";
+        const GRAPH_BG_COLOR = "white";
+        const GRAPH_LINE_COLOR = "black";
+        const PRIMARY_COLOR = "blue darken-1"
         var _graph_list = new Array();
 
         class LineGraph{
-            //name -> "graph_name+${name}" //fg_color -> Line Color //bg_color -> Card Color //row -> Row Element Id
-            constructor(name, fg_color, bg_color, row){
+            //name -> "graph_name+${name}" 
+            //row -> Row Element Id
+            constructor(name, row){
                 this.name = name;
-                this.fg_color = fg_color;
-                this.bg_color = bg_color;
 
                 this.graph_id = name+"_graph";
                 this.curr_val_id = name+"_val";
 
-                //Creates HTML div object 
+                //Creates HTML col object for card
                 this.col = document.createElement("div");
-                this.col.className = "col";
-                    //Inner Card element
-                    let card = document.createElement("div");
-                    card.className = "card small z-depth-4 text-white " + this.bg_color;
-                        //Card Body element (graph)
-                        let card_body = document.createElement("div");
-                        card_body.className = "card-content";
-                        card_body.id = this.graph_id;
-                        card.appendChild(card_body);
-                        //Card Action element
-                        let card_action = document.createElement("div");
-                        card_action.className = "card-action blue darken-1";
-                            //Action Content Div
-                            let card_action_contents = document.createElement("div")
-                                //Title
-                                let card_action_title = document.createElement("div");
-                                card_action_title.className="col s8";
-                                card_action_title.appendChild(document.createTextNode(this.name));
-                                card_action.appendChild(card_action_title);
-                                //Curr Val
-                                let card_action_val = document.createElement("div");
-                                card_action_val.className="col s4";
-                                card_action_val.id = this.curr_val_id;
-                                card_action_val.appendChild(document.createTextNode("placeholder"));
-                                card_action.appendChild(card_action_val);
-                            card_action_contents.appendChild(card_action_title);
-                            card_action_contents.appendChild(card_action_val);
-                        card_action.appendChild(card_action_contents);
-                    card.appendChild(card_action);
-                this.col.appendChild(card);
+                this.col.className = "col m4";
+                this.col.innerHTML = 
+                `<div class="card small z-depth-4 text-white ${GRAPH_BG_COLOR}">
+                    <div class="card-content rickshaw_graph" id="${this.graph_id}">
+                        <div class="card-action ${PRIMARY_COLOR}">
+                            <div>
+                                <div class="col m8">test11</div>
+                                <div class="col m4" id="${this.curr_val_id}">69</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
                 document.getElementById(row).appendChild(this.col);
 
                 //Creates Rickshaw Graph object
@@ -91,7 +74,7 @@
                     height: GRAPH_HEIGHT,
                     renderer: GRAPH_STYLE,
                     series: new Rickshaw.Series.FixedDuration([{
-                        name: 'one', color: this.fg_color
+                        name: 'one', color: GRAPH_LINE_COLOR
                     }], undefined, {
                         timeInterval: UPDATE_INTERVAL,
                         maxDataPoints: 100,
@@ -99,6 +82,7 @@
                     })
                 });
             }
+            /*--Constructor End--*/
 
             get divEle(){ return this.col; }
             get graphObj(){ return this.graph; }
@@ -107,17 +91,17 @@
         }
 
         //Row1
-        _graph_list.push(new LineGraph("test11", "black", "white", "row1"));
-        _graph_list.push(new LineGraph("test12", "black", "white", "row1"));
-        _graph_list.push(new LineGraph("test13", "black", "white", "row1"));
+        _graph_list.push(new LineGraph("test11", "row1"));
+        _graph_list.push(new LineGraph("test12", "row1"));
+        _graph_list.push(new LineGraph("test13", "row1"));
         //Row2
-        _graph_list.push(new LineGraph("test21", "black", "white", "row2"));
-        _graph_list.push(new LineGraph("test22", "black", "white", "row2"));
-        _graph_list.push(new LineGraph("test23", "black", "white", "row2"));
+        _graph_list.push(new LineGraph("test21", "row2"));
+        _graph_list.push(new LineGraph("test22", "row2"));
+        _graph_list.push(new LineGraph("test23", "row2"));
          //Row3
-        _graph_list.push(new LineGraph("test31", "black", "white", "row3"));
-        _graph_list.push(new LineGraph("test32", "black", "white", "row3"));
-        _graph_list.push(new LineGraph("test33", "black", "white", "row3"));
+        _graph_list.push(new LineGraph("test31", "row3"));
+        _graph_list.push(new LineGraph("test32", "row3"));
+        _graph_list.push(new LineGraph("test33", "row3"));
  
         //Initialization
         _graph_list.forEach(function(graph){
